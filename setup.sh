@@ -1,6 +1,8 @@
+# Exit on error
+set -e
+
 # install zsh
 echo "Debug: Installing zsh and curl"
-sudo apt update
 sudo apt install zsh -y
 sudo apt install curl -y
 
@@ -11,6 +13,8 @@ if id "a" &>/dev/null; then
     if [ "$confirm" = "yes" ]; then
         read -p "This action is irreversible. Type 'yes' again to confirm: " confirm2
         if [ "$confirm2" = "yes" ]; then
+            echo "Terminating all processes of user 'a'..."
+            # sudo pkill -u a
             echo "Deleting user 'a' and their home directory..."
             sudo userdel -r a
         else
@@ -38,47 +42,20 @@ sudo -u a mkdir -p /home/a/.ssh
 echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC4DhuwpxW2YuZBrEWuIFY0nrZsVIW4Kma7HMxeGL1F64fnK68plpRcojd0scjwXol7BC7Pv0PWTIvnDKWMrbSuVoOXjf5/s79UQ0RGT7zPOYg2onx1JytqSHnEM7x7/uPok9edZ0HwK16MZaH/p3EOpBzsB1hcIiFdAkKew7rmjy0a65hZpoi2ikciWYD8R40n7G1NuDgJBgwzCOShXSg3EqPN6R8dQ4olhJgQoZJnwpP7ZUJfrwdyJGa4aSc54tSWNMpWxlurEZiL/twCO2io0X8wjQ12tRHby4xP6Ejcnx9RLABrZdxFzHpow4ZhNI5aIxtv7PAi3W4WMOhzb9s6XNopBkkW851D5FIELiKSin3LY/6qts4LSbVretxek5L09FI9a6DkutAs9vjIJHkRUnr4exy7opjF3YprpgnlFPyvj9pznaKHvwtEuNxXX5qyoi6F3d6Zhc57XGcYXJbwHNelX6jNWJVBpmdPVZTwNr85BrZOR3gbcVTByDFa9kE= qqap@macpro.local" | sudo -u a tee /home/a/.ssh/authorized_keys
 sudo -u a chmod 600 /home/a/.ssh/authorized_keys
 
+# Copy setupa.sh to /home/a and execute it as user a
+echo "Debug: Copying setupa.sh to /home/a"
+sudo cp setupa.sh /home/a/setupa.sh
+sudo chown a:a /home/a/setupa.sh
+sudo chmod +x /home/a/setupa.sh
 
+echo "Debug: Executing setupa.sh as user a"
+sudo -u a /home/a/setupa.sh
 
-# Switch to user "a" for the rest of the setup
-echo "Debug: Switching to user 'a'"
-sudo su - a
+echo "Debug: Installation complete for user a"
+# Get the IP address of the system
+IP_ADDRESS=$(hostname -I | awk '{print $1}')
 
-# setup for current user
-echo "Debug: Setting up zsh for current user"
-command -v zsh | sudo tee -a /etc/shells
-sudo chsh -s $(which zsh) $USER
-echo $SHELL
-
-# setup oh my zsh
-echo "Debug: Setting up Oh My Zsh"
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-# install powerlevel10k theme
-echo "Debug: Installing powerlevel10k theme"
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-
-# install zsh-autosuggestions
-echo "Debug: Installing zsh-autosuggestions"
-git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
-
-# install zsh-syntax-highlighting
-echo "Debug: Installing zsh-syntax-highlighting"
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~
-
-# install https://github.com/unixorn/fzf-zsh-plugin
-echo "Debug: Installing fzf-zsh-plugin"
-git clone https://github.com/unixorn/fzf-zsh-plugin.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/fzf-zsh-plugin
-
-# copy the .zshrc and .p10k.zsh into ~
-echo "Debug: Copying .zshrc and .p10k.zsh to home directory"
-cp .zshrc ~
-cp .p10k.zsh ~
-
-# restart zsh
-echo "Debug: Restarting zsh"
-source ~/.zshrc
-
-# complete installation
-echo "Debug: Installation complete"
-echo "done"
+# Inform the user about SSH access
+echo "Installation complete. You can now SSH into the system using:"
+echo "ssh a@$IP_ADDRESS"
+echo "This IP address was automatically detected from your system."

@@ -1,3 +1,6 @@
+# Install ripgrep if not already installed
+command -v rg &> /dev/null || { echo "Debug: Installing ripgrep"; sudo apt install ripgrep -y; }
+
 # setup for current user
 echo "Debug: Setting up zsh for current user"
 command -v zsh | sudo tee -a /etc/shells

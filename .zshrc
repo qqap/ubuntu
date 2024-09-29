@@ -11,6 +11,19 @@ fi
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 alias sl=ls
+alias rg='rg -i'
+
+git() {
+    case "$1" in
+        psuh|psh|puhs|pshu|puh|pus)
+            shift
+            command git push "$@"
+            ;;
+        *)
+            command git "$@"
+            ;;
+    esac
+}
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,

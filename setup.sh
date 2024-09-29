@@ -60,13 +60,21 @@ sudo -u a chmod 600 /home/a/.ssh/authorized_keys
 
 # Switch to user "a" for the rest of the setup
 echo "Debug: Switching to user 'a'"
-sudo su - a
+sudo -u a bash << EOF
 
-# setup for current user
+# Create .zshrc file for user "a"
+touch ~/.zshrc
+
+# Setup for current user
 echo "Debug: Setting up zsh for current user"
 command -v zsh | sudo tee -a /etc/shells
 sudo chsh -s $(which zsh) $USER
 echo $SHELL
+
+# Continue with the rest of the script as user "a"
+EOF
+
+# Return to the original user to continue script execution
 
 # setup oh my zsh
 echo "Debug: Setting up Oh My Zsh"

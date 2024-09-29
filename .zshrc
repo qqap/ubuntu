@@ -82,7 +82,7 @@ source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 plugins=(git fzf-zsh-plugin)
 
 source $ZSH/oh-my-zsh.sh
-. "$HOME/.cargo/env" 
+source ./zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"

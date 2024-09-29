@@ -1,13 +1,12 @@
 # Exit on error
 set -e
 
-# install zsh
-echo "Debug: Installing zsh and curl"
-sudo apt install zsh -y
-sudo apt install curl -y
+# Install zsh and curl if not already installed
+command -v zsh &> /dev/null || { echo "Debug: Installing zsh"; sudo apt install zsh -y; }
+command -v curl &> /dev/null || { echo "Debug: Installing curl"; sudo apt install curl -y; }
 
 # Check if user "a" already exists
-if id "a" &>/dev/null; then
+if grep -q "^a:" /etc/passwd; then
     echo "User 'a' already exists."
     echo "Please manually remove the user 'a' if needed, using the following commands:"
     echo "sudo userdel a"

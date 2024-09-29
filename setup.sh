@@ -4,9 +4,53 @@ sudo apt update
 sudo apt install zsh -y
 sudo apt install curl -y
 
+# Check if user "a" already exists
+if id "a" &>/dev/null; then
+    echo "User 'a' already exists."
+    read -p "Are you sure you want to delete user 'a' and their home directory? (Type 'yes' to confirm): " confirm
+    if [ "$confirm" = "yes" ]; then
+        read -p "This action is irreversible. Type 'yes' again to confirm: " confirm2
+        if [ "$confirm2" = "yes" ]; then
+            echo "Deleting user 'a' and their home directory..."
+            sudo userdel -r a
+        else
+            echo "Operation cancelled."
+            exit 1
+        fi
+    else
+        echo "Operation cancelled."
+        exit 1
+    fi
+fi
+
+# Check if /home/a exists (in case the user was deleted but the directory remains)
+if [ -d "/home/a" ]; then
+    echo "Directory /home/a exists."
+    read -p "Are you sure you want to delete /home/a? (Type 'yes' to confirm): " confirm
+    if [ "$confirm" = "yes" ]; then
+        read -p "This action is irreversible. Type 'yes' again to confirm: " confirm2
+        if [ "$confirm2" = "yes" ]; then
+            echo "Deleting /home/a..."
+            sudo rm -rf /home/a
+        else
+            echo "Operation cancelled."
+            exit 1
+        fi
+    else
+        echo "Operation cancelled."
+        exit 1
+    fi
+fi
+
+
 # Create user "a"
 echo "Debug: Creating user 'a'"
 sudo useradd -m -s /bin/zsh a
+
+# Add user "a" to sudoers file without password requirement
+echo "Debug: Adding user 'a' to sudoers file without password requirement"
+echo "a ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/a
+sudo chmod 0440 /etc/sudoers.d/a
 
 # Set up SSH for user "a"
 echo "Debug: Setting up SSH for user 'a'"
@@ -23,14 +67,6 @@ echo "Debug: Setting up zsh for current user"
 command -v zsh | sudo tee -a /etc/shells
 sudo chsh -s $(which zsh) $USER
 echo $SHELL
-
-# Create an empty .zshrc file to prevent the initial zsh setup prompt
-echo "Debug: Creating empty .zshrc file"
-touch ~/.zshrc
-
-# switch to zsh
-echo "Debug: Switching to zsh"
-zsh
 
 # setup oh my zsh
 echo "Debug: Setting up Oh My Zsh"

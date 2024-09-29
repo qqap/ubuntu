@@ -8,6 +8,9 @@ command -v zsh | sudo tee -a /etc/shells
 sudo chsh -s $(which zsh) $USER
 echo $SHELL
 
+# switch to zsh
+zsh
+
 # setup oh my zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 

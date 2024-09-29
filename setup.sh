@@ -9,22 +9,12 @@ sudo apt install curl -y
 # Check if user "a" already exists
 if id "a" &>/dev/null; then
     echo "User 'a' already exists."
-    read -p "Are you sure you want to delete user 'a' and their home directory? (Type 'yes' to confirm): " confirm
-    if [ "$confirm" = "yes" ]; then
-        read -p "This action is irreversible. Type 'yes' again to confirm: " confirm2
-        if [ "$confirm2" = "yes" ]; then
-            echo "Terminating all processes of user 'a'..."
-            # sudo pkill -u a
-            echo "Deleting user 'a' and their home directory..."
-            sudo userdel -r a
-        else
-            echo "Operation cancelled."
-            exit 1
-        fi
-    else
-        echo "Operation cancelled."
-        exit 1
-    fi
+    echo "Please manually remove the user 'a' if needed, using the following commands:"
+    echo "sudo userdel a"
+    echo "sudo rm -rf /home/a"
+    echo "sudo pkill -U a"
+    echo "Then run this script again."
+    exit 1
 fi
 
 # Create user "a"

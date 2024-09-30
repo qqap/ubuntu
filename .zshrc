@@ -96,7 +96,7 @@ source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 plugins=(git fzf-zsh-plugin)
 
 source $ZSH/oh-my-zsh.sh
-source ./zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source ./zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
